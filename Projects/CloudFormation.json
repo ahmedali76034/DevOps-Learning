@@ -1,0 +1,50 @@
+{
+    "AWSTemplateFormatVersion":"2010-09-09",
+    "Resources": {
+      "yourVPC": {
+         "Type": "AWS::EC2::VPC",
+         "Properties": {
+           "CidrBlock": "10.0.0.0/16",
+           "EnableDnsSupport" : false,
+           "Tags" : [ { "Key" : "Name", "Value": "egs-devops"}]
+         }
+      },
+      "myInternetGatway": {
+          "Type" : "AWS::EC2::InternetGateway",
+          "Properties" : {
+            "Tags" : [ { "Key" : "Name", "Value": "Learning"}]
+          }
+      },
+      "attachGatway": {
+        "Type" : "AWS::EC2::VPCGatewayAttachment",
+        "Properties" : {
+          "InternetGatewayId" : {"Ref" : "myInternetGatway"},        
+          "VpcId" : {"Ref": "yourVPC"}
+        }
+      },
+      "publicSubnet": {
+        "Type" : "AWS::EC2::Subnet",
+        "Properties" : {
+          "CidrBlock" : "10.0.0.0/24",
+          "MapPublicIpOnLaunch" : false,
+          "Tags" : [ { "Key" : "Name", "Value": "Learning"}],
+          "VpcId": {"Ref": "yourVPC"}
+        }
+      },
+      "privateSubnet": {
+        "Type" : "AWS::EC2::Subnet",
+        "Properties" : {
+          "CidrBlock" : "10.0.1.0/24",
+          
+          "Tags" : [ {"Key": "Name", "Value": "Learning"}],
+          "VpcId": {"Ref": "yourVPC"}
+         }
+      },
+      "natGateway": {
+         "Type" : "AWS::EC2::NatGateway",
+         "Properties" : {
+           "SubnetId" : {"Ref": "publicSubnet"}      
+         }
+      } 
+    }
+}
